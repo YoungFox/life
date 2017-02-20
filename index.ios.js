@@ -14,13 +14,33 @@ import {
   TouchableHighlight
 } from 'react-native';
 
+class Timer extends Component{
+ 
+  constructor(props) {
+    super(props);
+  
+    this.state = {time: 0};
+  }
+  componentDidMount(){
+    setInterval(() => {
+      let time = this.state.time;
+      this.setState({time: time+10});
+    },10);
+  }
+  render(){
+   
+    return (
+      <Text>{this.state.time}</Text>
+    );
+  }
+}
+
+
 class Detail extends Component{
   render(){
     return (
       <View style={{marginTop: 200, alignSelf: 'center'}}>
-        <Text>
-        详情啊啊啊
-        </Text>
+        <Timer />
       </View>
     );
   }
@@ -39,13 +59,13 @@ class Row extends Component{
   render(){
     const nextRoute = {
       component: Detail,
-      title: '后退',
+      title: '详情页',
       passProps: { myProp: 'bar' }
     };
     return(
-      <View style={styles.row}>
-        <TouchableHighlight  onPress={() => this._handleNextPress(nextRoute)}>
-          <Text style={{marginTop: 200, alignSelf: 'center'}}>
+      <View>
+        <TouchableHighlight  style={styles.row}  onPress={() => this._handleNextPress(nextRoute)}>
+          <Text style={styles.listItem}>
             See you on the other nav {this.props.id}!
           </Text>
         </TouchableHighlight>
@@ -58,8 +78,19 @@ class Home extends Component{
   
 
   render() {
-    return(<Row navigator={this.props.navigator} title="啊啊啊" id="1" onPress={this._handleNextPress}/>
-          );
+    return(
+      <View style={styles.home}>
+        <Row navigator={this.props.navigator} 
+        title="啊啊啊" id="1" 
+        onPress={this._handleNextPress}/>
+        <Row navigator={this.props.navigator} 
+        title="啊啊啊" id="2" 
+        onPress={this._handleNextPress}/>
+        <Row navigator={this.props.navigator} 
+        title="啊啊啊" id="3" 
+        onPress={this._handleNextPress}/>
+      </View>
+    );
   }
 }
 
@@ -69,7 +100,7 @@ export default class Life extends Component {
       <NavigatorIOS
         initialRoute={{
           component: Home,
-          title: 'My Initial Scene',
+          title: '首页',
         }}
         style={{flex: 1}}
       />
@@ -78,27 +109,20 @@ export default class Life extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  home: {
+    paddingTop: 60
   },
   row: {
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    margin: 20,
+    height: 40
+  },
+  listItem: {
+    color: '#333',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    lineHeight: 38,
   }
 });
 
