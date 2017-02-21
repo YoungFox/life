@@ -26,15 +26,30 @@ class Timer extends Component{
   
     this.state = {h: 0,m: 0,s: 0};
   }
+
+  addTime(o){
+    o.s++;
+    if(o.s >= 60){
+      o.s = o.s - 60;
+      o.m++
+    }
+    if(o.m >= 60){
+      o.m = o.m - 60;
+      o.h++
+    }
+
+    return o;
+  }
   componentDidMount(){
     let time = this.props.time;
     this.setState({h: time.hour,m: time.minute,s: time.second});
 
     this.setInterval(() => {
-      let time = this.state.s;
-      this.setState({s: time+1});
-      this.props.change(time+1);
-    },10);
+      let timeO = this.state;
+      let time = this.addTime(timeO);
+      this.setState(time);
+      this.props.change(time);
+    },1000);
   }
   render(){
     // alert(this.state.h);
@@ -88,9 +103,9 @@ class Row extends Component{
       task: { name:'单词',
         key: 1,
         time:{
-          hour: 0,
-          minute: 0,
-          second: v
+          hour: v.h,
+          minute: v.m,
+          second: v.s
         }
       }
     });
