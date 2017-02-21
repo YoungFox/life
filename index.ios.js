@@ -14,6 +14,11 @@ import {
   TouchableHighlight
 } from 'react-native';
 
+// 用来解决timmer在组件卸载后仍然运行的问题
+import TimerMixin from 'react-timer-mixin';
+let reactMixin = require('react-mixin');
+
+
 class Timer extends Component{
  
   constructor(props) {
@@ -22,7 +27,7 @@ class Timer extends Component{
     this.state = {time: 0};
   }
   componentDidMount(){
-    setInterval(() => {
+    this.setInterval(() => {
       let time = this.state.time;
       this.setState({time: time+10});
     },10);
@@ -34,7 +39,7 @@ class Timer extends Component{
     );
   }
 }
-
+reactMixin.onClass(Timer, TimerMixin);
 
 class Detail extends Component{
   render(){
