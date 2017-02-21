@@ -99,16 +99,11 @@ class Row extends Component{
   }
 
   change(v){
-    this.setState({
-      task: { name:'单词',
-        key: 1,
-        time:{
-          hour: v.h,
-          minute: v.m,
-          second: v.s
-        }
-      }
-    });
+    let task = this.props.task;
+    task.time.hour = v.h;
+    task.time.minute = v.m;
+    task.time.second = v.s;
+    this.setState(task);
   }
 
   render(){
@@ -139,11 +134,7 @@ class Row extends Component{
 
 reactMixin.onClass(Row, TimerMixin);
 
-class Home extends Component{
-  constructor(props) {
-    super(props);
-  
-    this.state = {tasks:[
+let taskList = {tasks:[
       { name:'单词',
         key: 1,
         time:{
@@ -151,8 +142,30 @@ class Home extends Component{
           minute: 0,
           second: 0
         }
+      },
+      { name:'健身',
+        key: 2,
+        time:{
+          hour: 0,
+          minute: 0,
+          second: 0
+        }
+      },
+      { name:'数学',
+        key: 3,
+        time:{
+          hour: 0,
+          minute: 0,
+          second: 0
+        }
       }
     ]};
+
+class Home extends Component{
+  constructor(props) {
+    super(props);
+  
+    this.state = taskList;
 
     this.upDateTime = this.upDateTime.bind(this);
   }
@@ -169,7 +182,7 @@ class Home extends Component{
           tasks.map((v ,k) => {
             return (<Row navigator={this.props.navigator} 
             id = {k}
-            key='1' 
+            key= {k} 
             upDateTime = {this.upDateTime}
             onPress={this._handleNextPress}
             task = {v}
