@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -11,13 +5,14 @@ import {
   Text,
   View,
   NavigatorIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  AsyncStorage
 } from 'react-native';
 
 // 用来解决timmer在组件卸载后仍然运行的问题
 import TimerMixin from 'react-timer-mixin';
 let reactMixin = require('react-mixin');
-
+const storageId = 'myList';
 
 class Timer extends Component{
  
@@ -52,7 +47,6 @@ class Timer extends Component{
     },1000);
   }
   render(){
-    // alert(this.state.h);
     return (
       <Text>{this.state.h}:{this.state.m}:{this.state.s}</Text>
     );
@@ -169,9 +163,18 @@ class Home extends Component{
 
     this.upDateTime = this.upDateTime.bind(this);
   }
+  componentDidMount(){
+    AsyncStorage.getItem(storageId,(d)=>{
+      if(d){
+        alert(d);
+        this.setState({tasks:d});
+      }
+    })
+  }
   upDateTime(index, value){
     let tasks = this.state.tasks;
     tasks[index] = value;
+    AsyncStorage.setItem(storageId, JSON.stringify(tasks));
     this.setState(tasks: tasks);
   }
   render() {
