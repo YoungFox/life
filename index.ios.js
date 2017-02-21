@@ -24,18 +24,22 @@ class Timer extends Component{
   constructor(props) {
     super(props);
   
-    this.state = {time: 0};
+    this.state = {h: 0,m: 0,s: 0};
   }
   componentDidMount(){
+    let time = this.props.time;
+    this.setState({h: time.hour,m: time.minute,s: time.second});
+
     this.setInterval(() => {
-      let time = this.state.time;
-      this.setState({time: time+10});
+      let time = this.state.s;
+      this.setState({s: time+1});
+      this.props.change(time+1);
     },10);
   }
   render(){
-   
+    // alert(this.state.h);
     return (
-      <Text>{this.state.time}</Text>
+      <Text>{this.state.h}:{this.state.m}:{this.state.s}</Text>
     );
   }
 }
@@ -43,15 +47,24 @@ reactMixin.onClass(Timer, TimerMixin);
 
 class Detail extends Component{
   render(){
+    
     return (
       <View style={{marginTop: 200, alignSelf: 'center'}}>
-        <Timer />
+      <Text>{this.props.myProp}</Text>
+        <Timer change={this.props.change} time={this.props.time}/>
       </View>
     );
   }
 }
 
 class Row extends Component{
+  constructor(props) {
+    super(props);
+  
+    this.state = {id: 1,task: null};
+
+    this.change = this.change.bind(this);
+  }
 
    _handleBackPress() {
     this.props.navigator.pop();
@@ -61,17 +74,47 @@ class Row extends Component{
     this.props.navigator.push(nextRoute);
   }
   
+  componentDidMount(){
+    this.setState({
+      id: this.props.id,
+      task: this.props.task
+    }
+    );
+    
+  }
+
+  change(v){
+    this.setState({
+      task: { name:'单词',
+        key: 1,
+        time:{
+          hour: 0,
+          minute: 0,
+          second: v
+        }
+      }
+    });
+  }
+
   render(){
     const nextRoute = {
       component: Detail,
       title: '详情页',
-      passProps: { myProp: 'bar' }
+      passProps: { myProp: 'bar' ,change:this.change, time: this.props.task.time},
+      leftButtonSystemIcon: 'add',
+      onLeftButtonPress: ()=>{
+        this.props.upDateTime(this.props.id , this.state.task);
+        this._handleBackPress();
+      }
     };
+    let task = this.props.task;
     return(
-      <View>
-        <TouchableHighlight  style={styles.row}  onPress={() => this._handleNextPress(nextRoute)}>
+      <View style={styles.list}>
+        <Text>{task.name}</Text>
+        <TouchableHighlight  style={styles.row} 
+        onPress={() => this._handleNextPress(nextRoute)}>
           <Text style={styles.listItem}>
-            See you on the other nav {this.props.id}!
+            {task.time.hour}:{task.time.minute}:{task.time.second}
           </Text>
         </TouchableHighlight>
       </View>
@@ -79,21 +122,45 @@ class Row extends Component{
   }
 }
 
-class Home extends Component{
-  
+reactMixin.onClass(Row, TimerMixin);
 
+class Home extends Component{
+  constructor(props) {
+    super(props);
+  
+    this.state = {tasks:[
+      { name:'单词',
+        key: 1,
+        time:{
+          hour: 0,
+          minute: 0,
+          second: 0
+        }
+      }
+    ]};
+
+    this.upDateTime = this.upDateTime.bind(this);
+  }
+  upDateTime(index, value){
+    let tasks = this.state.tasks;
+    tasks[index] = value;
+    this.setState(tasks: tasks);
+  }
   render() {
+    let tasks = this.state.tasks;
     return(
       <View style={styles.home}>
-        <Row navigator={this.props.navigator} 
-        title="啊啊啊" id="1" 
-        onPress={this._handleNextPress}/>
-        <Row navigator={this.props.navigator} 
-        title="啊啊啊" id="2" 
-        onPress={this._handleNextPress}/>
-        <Row navigator={this.props.navigator} 
-        title="啊啊啊" id="3" 
-        onPress={this._handleNextPress}/>
+        {
+          tasks.map((v ,k) => {
+            return (<Row navigator={this.props.navigator} 
+            id = {k}
+            key='1' 
+            upDateTime = {this.upDateTime}
+            onPress={this._handleNextPress}
+            task = {v}
+            />);
+          })
+        }
       </View>
     );
   }
@@ -117,10 +184,13 @@ const styles = StyleSheet.create({
   home: {
     paddingTop: 60
   },
+  list: {
+    margin: 20
+  },
   row: {
     borderWidth: 1,
     borderColor: '#ccc',
-    margin: 20,
+    
     height: 40
   },
   listItem: {
