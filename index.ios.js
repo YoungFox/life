@@ -1,3 +1,4 @@
+'use strict'
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -107,6 +108,7 @@ class Row extends Component{
       passProps: { myProp: 'bar' ,change:this.change, time: this.props.task.time},
       leftButtonSystemIcon: 'add',
       onLeftButtonPress: ()=>{
+        // alert(JSON.stringify(this.state.task));
         this.props.upDateTime(this.props.id , this.state.task);
         this._handleBackPress();
       }
@@ -164,18 +166,26 @@ class Home extends Component{
     this.upDateTime = this.upDateTime.bind(this);
   }
   componentDidMount(){
-    AsyncStorage.getItem(storageId,(d)=>{
-      if(d){
-        alert(d);
-        this.setState({tasks:d});
+    AsyncStorage.getItem(storageId,(err ,res)=>{
+      if(!err){
+        this.setState({tasks:JSON.parse(res)});
       }
-    })
+    });
+   
+   // var aa = await AsyncStorage.getItem(storageId);
+    
+  }
+  componentWillUnmount(){
+    let tasks = this.state.tasks;
+    // AsyncStorage.setItem(storageId, JSON.stringify(tasks));
   }
   upDateTime(index, value){
     let tasks = this.state.tasks;
     tasks[index] = value;
-    AsyncStorage.setItem(storageId, JSON.stringify(tasks));
-    this.setState(tasks: tasks);
+    AsyncStorage.setItem(storageId, JSON.stringify(tasks), () => {
+      this.setState(tasks: tasks);
+    });
+    // alert(JSON.stringify(tasks));
   }
   render() {
     let tasks = this.state.tasks;
