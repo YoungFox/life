@@ -12,22 +12,22 @@ import {
 
 // console.warn(Promise);
 
-var sleep = function (time) {
-    return new Promise(function (resolve, reject) {
-        setTimeout(function () {
-            resolve();
-        }, time);
-    })
-};
+// var sleep = function (time) {
+//     return new Promise(function (resolve, reject) {
+//         setTimeout(function () {
+//             resolve();
+//         }, time);
+//     })
+// };
 
-var start = async function () {
-    // 在这里使用起来就像同步代码那样直观
-    console.warn('start');
-    await sleep(3000);
-    console.warn('end');
-};
+// var start = async function () {
+//     // 在这里使用起来就像同步代码那样直观
+//     console.warn('start');
+//     await sleep(3000);
+//     console.warn('end');
+// };
 
-start();
+// start();
 
 // 用来解决timmer在组件卸载后仍然运行的问题
 import TimerMixin from 'react-timer-mixin';
@@ -128,8 +128,13 @@ class Row extends Component{
       leftButtonSystemIcon: 'add',
       onLeftButtonPress: ()=>{
         // alert(JSON.stringify(this.state.task));
-        this.props.upDateTime(this.props.id , this.state.task);
-        this._handleBackPress();
+        let back = async ()=>{
+          await this.props.upDateTime(this.props.id , this.state.task).catch(
+            (err) => {console.warn(err)}
+          );
+          this._handleBackPress();
+        };
+        back();
       }
     };
     let task = this.props.task;
@@ -196,16 +201,20 @@ class Home extends Component{
   }
   componentWillUnmount(){
     let tasks = this.state.tasks;
-    alert(1);
     // AsyncStorage.setItem(storageId, JSON.stringify(tasks));
   }
   upDateTime(index, value){
-    let tasks = this.state.tasks;
-    tasks[index] = value;
-    AsyncStorage.setItem(storageId, JSON.stringify(tasks), () => {
-      console.warn(JSON.stringify(tasks));
-      this.setState(tasks: tasks);
+    return new Promise((resolve, reject) => {
+      let tasks = this.state.tasks;
+      tasks[index] = value;
+      AsyncStorage.setItem(storageId, JSON.stringify(tasks), () => {
+        // console.warn(JSON.stringify(tasks));
+        this.setState({tasks: tasks},()=>{
+          resolve();
+        });
+      });
     });
+    
     // alert(JSON.stringify(tasks));
   }
   render() {
