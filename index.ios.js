@@ -10,8 +10,7 @@ import {
   AsyncStorage
 } from 'react-native';
 
-// console.warn(Promise);
-
+// await 例子
 // var sleep = function (time) {
 //     return new Promise(function (resolve, reject) {
 //         setTimeout(function () {
@@ -33,6 +32,14 @@ import {
 import TimerMixin from 'react-timer-mixin';
 let reactMixin = require('react-mixin');
 const storageId = 'myList';
+
+let tools = {
+  format: function (str){
+    // console.warn(typeof str);
+    let s = (str < 10) ? ('0'+str) : str;
+    return s;
+  }
+}
 
 class Timer extends Component{
  
@@ -68,7 +75,9 @@ class Timer extends Component{
   }
   render(){
     return (
-      <Text>{this.state.h}:{this.state.m}:{this.state.s}</Text>
+      <View style={styles.timerWrap}>
+        <Text style={styles.timerTxt}>{tools.format(this.state.h)}:{tools.format(this.state.m)}:{tools.format(this.state.s)}</Text>
+      </View>
     );
   }
 }
@@ -76,10 +85,8 @@ reactMixin.onClass(Timer, TimerMixin);
 
 class Detail extends Component{
   render(){
-    
     return (
-      <View style={{marginTop: 200, alignSelf: 'center'}}>
-      <Text>{this.props.myProp}</Text>
+      <View style={styles.detailWrap}>
         <Timer change={this.props.change} time={this.props.time}/>
       </View>
     );
@@ -123,11 +130,14 @@ class Row extends Component{
   render(){
     const nextRoute = {
       component: Detail,
-      title: '详情页',
+      title: '修炼中',
+      titleTextColor: '#fff',
+      barTintColor: '#3b5999',
+      tintColor: '#fff',
       passProps: { myProp: 'bar' ,change:this.change, time: this.props.task.time},
-      leftButtonSystemIcon: 'add',
+      leftButtonSystemIcon: 'done',
       onLeftButtonPress: ()=>{
-        // alert(JSON.stringify(this.state.task));
+        // 利用await方式，可以保证state更新完毕再跳转。
         let back = async ()=>{
           await this.props.upDateTime(this.props.id , this.state.task).catch(
             (err) => {console.warn(err)}
@@ -140,12 +150,14 @@ class Row extends Component{
     let task = this.props.task;
     return(
       <View style={styles.list}>
-        <Text>{task.name}</Text>
-        <TouchableHighlight  style={styles.row} 
+        <TouchableHighlight  
         onPress={() => this._handleNextPress(nextRoute)}>
+        <View style={styles.row}>
+          <Text style={styles.listItemTitle}>{task.name}</Text>
           <Text style={styles.listItem}>
-            {task.time.hour}:{task.time.minute}:{task.time.second}
+            {tools.format(task.time.hour)}:{tools.format(task.time.minute)}:{tools.format(task.time.second)}
           </Text>
+        </View>
         </TouchableHighlight>
       </View>
     );
@@ -163,7 +175,7 @@ let taskList = {tasks:[
           second: 0
         }
       },
-      { name:'健身',
+      { name:'经济学',
         key: 2,
         time:{
           hour: 0,
@@ -171,7 +183,7 @@ let taskList = {tasks:[
           second: 0
         }
       },
-      { name:'数学',
+      { name:'Javascript',
         key: 3,
         time:{
           hour: 0,
@@ -243,32 +255,85 @@ export default class Life extends Component {
       <NavigatorIOS
         initialRoute={{
           component: Home,
-          title: '首页',
+          title: 'Life',
+          titleTextColor: '#fff',
+          barTintColor: '#3b5999'
         }}
-        style={{flex: 1}}
+        style={styles.nav}
       />
     );
   }
 }
 
 const styles = StyleSheet.create({
+  wrap:{
+    height: 1000
+  },
+  nav: {
+    flex: 1
+  },
   home: {
-    paddingTop: 60
+    paddingTop: 60,
+    flex: 1,
+    backgroundColor: '#f2f2f2'
   },
   list: {
-    margin: 20
+    marginTop: 20
   },
   row: {
-    borderWidth: 1,
+    borderWidth: 0.5,
+    borderRightWidth: 0,
+    borderLeftWidth: 0,
     borderColor: '#ccc',
-    
-    height: 40
+    padding: 20,
+    paddingLeft: 0,
+    paddingRight: 0,
+    height: 80,
+    backgroundColor: '#fff',
+    flexDirection: 'row'
+  },
+  listItemTitle: {
+    flex: 1,
+    lineHeight: 39,
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
   listItem: {
+    flex:4,
     color: '#333',
     textAlign: 'center',
     textAlignVertical: 'center',
-    lineHeight: 38,
+    lineHeight: 39,
+    fontSize: 20
+  },
+  detailWrap: {
+    flex: 1,
+    flexDirection: 'column',
+    // justifyContent: 'center',
+    marginTop: 120,
+    alignItems: 'center',
+  },
+  timerWrap: {
+    flex: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.5,
+    borderColor: '#19b955',
+    height: 200,
+    width: 200,
+    borderRadius: 200
+  },
+  timerTxt: {
+    flex: 0,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 160,
+    textAlign: 'center',
+    lineHeight: 40,
+    color: '#19b955',
+    fontSize: 30
   }
 });
 
