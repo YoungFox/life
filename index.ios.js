@@ -203,17 +203,16 @@ class Home extends Component{
   }
   componentDidMount(){
     AsyncStorage.getItem(storageId,(err ,res)=>{
-      if(!err){
+      if(!err && res){
         this.setState({tasks:JSON.parse(res)});
       }
     });
    
-   // var aa = await AsyncStorage.getItem(storageId);
     
   }
   componentWillUnmount(){
+    // ???什么时机触发？
     let tasks = this.state.tasks;
-    // AsyncStorage.setItem(storageId, JSON.stringify(tasks));
   }
   upDateTime(index, value){
     return new Promise((resolve, reject) => {
@@ -230,7 +229,7 @@ class Home extends Component{
     // alert(JSON.stringify(tasks));
   }
   render() {
-    let tasks = this.state.tasks;
+    let tasks = this.state.tasks || taskList;
     return(
       <View style={styles.home}>
         {
@@ -278,14 +277,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2'
   },
   list: {
-    marginTop: 20
+    marginTop: 20,
+    backgroundColor: '#fff'
   },
   row: {
     borderWidth: 0.5,
     borderRightWidth: 0,
     borderLeftWidth: 0,
     borderColor: '#ccc',
-    padding: 20,
     paddingLeft: 0,
     paddingRight: 0,
     height: 80,
@@ -294,7 +293,7 @@ const styles = StyleSheet.create({
   },
   listItemTitle: {
     flex: 1,
-    lineHeight: 39,
+    lineHeight: 79,
     textAlign: 'center',
     textAlignVertical: 'center',
   },
@@ -303,7 +302,7 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
     textAlignVertical: 'center',
-    lineHeight: 39,
+    lineHeight: 79,
     fontSize: 20
   },
   detailWrap: {
