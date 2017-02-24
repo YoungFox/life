@@ -16,7 +16,7 @@ react-native run-ios
 #determine to building a rn app
 
 
-
+/dev/test/AwesomeProject/node_modules/react-native/packager
 
 
 ```
