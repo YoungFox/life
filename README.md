@@ -12,6 +12,12 @@
  * Navigator
  */
 
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ * @flow
+ */
+
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -33,7 +39,7 @@ class Timmer extends Component{
   componentDidMount(){
     setInterval(() => {
       this.abs = this.abs+1;
-      console.warn(this.abs);
+      // console.warn(this.abs);
     },10);
   }
 
@@ -67,21 +73,51 @@ export default class NavAllDay extends Component {
     return (
       <Navigator
         initialRoute={routes[0]}
-        initialRouteStack={routes}
-        renderScene={(route, navigator) =>
-          <TouchableHighlight onPress={() => {
-            if (route.index === 0) {
-              navigator.push(routes[1]);
-            } else {
-              navigator.pop();
-            }
-          }}>
-          <Text>Hello {route.title}!
-                        {this.state.a}
-          </Text>
-          </TouchableHighlight>
-        }
-
+        renderScene={(route, navigator) =>{
+          if(route.index === 0){
+            return(
+             <TouchableHighlight onPress={() => {
+              if (route.index === 0) {
+                navigator.push(routes[1]);
+              } else {
+                navigator.pop();
+              }
+            }}>
+           
+            <View>
+              
+              <Text>Hello {route.title}!
+                            {this.state.a}
+              </Text>
+            </View>
+            </TouchableHighlight>
+            )
+          }else{
+            return(
+             <TouchableHighlight onPress={() => {
+              if (route.index === 0) {
+                navigator.push(routes[1]);
+              } else {
+                navigator.pop();
+              }
+            }}>
+           
+            <View>
+              
+              <Timmer nav={navigator} onPress={this.change} />
+               
+              <Text>Hello {route.title}!
+                            {this.state.a}
+              </Text>
+            </View>
+            </TouchableHighlight>
+            )
+          }
+         
+        }}
+        onDidFocus={(route,navigator)=>{
+          // console.warn(route.index);
+        }}
         navigationBar={
            <Navigator.NavigationBar
              routeMapper={{
@@ -91,8 +127,9 @@ export default class NavAllDay extends Component {
                     return null;
                   } else {
                     return (
-                      <Timmer nav={navigator} onPress={this.change}>
-                      </Timmer>
+                      <View />
+                      // <Timmer nav={navigator} onPress={this.change}>
+                      // </Timmer>
                     );
                   }
                 },
@@ -114,5 +151,6 @@ export default class NavAllDay extends Component {
 }
 
 AppRegistry.registerComponent('life', () => NavAllDay);
+
 
 ```
