@@ -7,6 +7,8 @@
 
 此时，再更新Life组件的state，从而实现了计时页与首页时间同步的功能
 
+jsx es6高亮用bable
+
 
 ```
 npm install
@@ -15,9 +17,15 @@ react-native run-ios
 ```
 #determine to building a rn app
 
-
+```
 /dev/test/AwesomeProject/node_modules/react-native/packager
+```
 
+```
+真机调试时候报错
+Failed to create provisioning profile. The app ID "com.facebook.react.uiapp" cannot be registered to your development team. Change your bundle identifier to a unique string to try again.
+解决方案仔细看英文啊！！
+```
 
 ```
 

@@ -265,8 +265,6 @@ export default class Life extends Component {
     navigator.pop();
   }
   upDateTime(index, value){
-    console.warn(index);
-    // console.warn(JSON.stringify(value));
     return new Promise((resolve, reject) => {
       let tasks = this.state.tasks;
       tasks[index].time = value;
@@ -322,8 +320,6 @@ export default class Life extends Component {
           // console.warn(route.index);
         }}
 
-
-
         navigationBar={
            <Navigator.NavigationBar
              routeMapper={{
@@ -351,9 +347,9 @@ export default class Life extends Component {
                   Title: (route, navigator, index, navState) =>
                 {
                 if (route.home) { 
-                  return (<Text style={{color: '#fff'}}>Life</Text>); 
+                  return (<Text style={styles.navText}>Life</Text>); 
                 }else{
-                  return (<Text style={{color: '#fff'}}>修炼中</Text>) 
+                  return (<Text style={styles.navText}>修炼中</Text>) 
                 }
               }
              }}
@@ -441,7 +437,10 @@ const styles = StyleSheet.create({
   navBarLeftButton: {
     paddingLeft: 10,
   },
-
+  navText: {
+    color: '#fff',
+    top: 14
+  }
 });
 
 AppRegistry.registerComponent('life', () => Life);
